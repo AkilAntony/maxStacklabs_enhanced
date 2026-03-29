@@ -68,7 +68,7 @@ const ProductListing = () => {
         <SearchBar
           setUserInput={setUserInput}
           userInput={userInput}
-          placeholder="Search products"
+          placeholder="Search products by title"
         />
 
         {/* product Listing  */}
