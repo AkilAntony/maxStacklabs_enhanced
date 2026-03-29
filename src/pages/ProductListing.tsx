@@ -71,7 +71,7 @@ const ProductListing = () => {
         {/* product Listing  */}
         {filteredProducts && filteredProducts.length > 0 ? (
           <div className="min-h-50">
-            <div className="grid md:grid-cols-3 gap-3 py-10">
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3 py-10">
               {filteredProducts?.map((product: Product) => (
                 <ProductCard
                   imageUrl={product.images[0]}
