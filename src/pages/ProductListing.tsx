@@ -73,7 +73,7 @@ const ProductListing = () => {
 
         {/* product Listing  */}
         {filteredProducts && filteredProducts.length > 0 ? (
-          <div>
+          <div className="min-h-50">
             <div className="grid md:grid-cols-3 gap-3 py-10">
               {filteredProducts?.map((product: Product) => (
                 <ProductCard
