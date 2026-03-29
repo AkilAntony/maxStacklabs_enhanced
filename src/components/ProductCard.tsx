@@ -34,7 +34,7 @@ const ProductCard = ({
             {productName ?? "No Name"}
           </p>
 
-          <p className="font-bold text-[16px] ">₹ {price}</p>
+          <p className="font-bold text-[16px] ">$ {price}</p>
         </div>
 
         <div

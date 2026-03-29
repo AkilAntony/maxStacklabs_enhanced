@@ -29,7 +29,6 @@ const ProductListing = () => {
 
   const filteredProducts = useMemo(() => {
     return productData?.products.filter((product) => {
-      
       // handle search in frontend
       if (debouncedInput) {
         const searchParam = debouncedInput.split(" ").join("").toLowerCase();
@@ -40,8 +39,6 @@ const ProductListing = () => {
       return true;
     });
   }, [productData, debouncedInput]);
-
- 
 
   if (error || productsError) {
     return (
@@ -78,7 +75,7 @@ const ProductListing = () => {
               {filteredProducts?.map((product: Product) => (
                 <ProductCard
                   imageUrl={product.images[0]}
-                  price={100}
+                  price={product.price}
                   productName={product.title}
                   key={product.id}
                   rating={product.rating}
