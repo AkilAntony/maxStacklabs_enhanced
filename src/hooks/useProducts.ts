@@ -1,0 +1,44 @@
+import { useEffect, useState } from "react";
+import type { ProductResponse } from "../types/product";
+
+export const useProductss = ({
+  maxItem,
+  pageNo =1,
+  searchInput,
+}: {
+  pageNo?: number;
+  searchInput?: string;
+  maxItem?: number;
+}) => {
+  const [data, setData] = useState<ProductResponse>();
+  const [isLoading, setisLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const getProducts = async () => {
+    try {
+      setisLoading(true);
+      const response = await fetch(
+        `https://dummyjson.com/products/search?q=${searchInput}&limit=${maxItem ?? 10}&skip=${(pageNo - 1) * 10}`,
+      );
+
+      const products: ProductResponse = await response.json();
+      setData(products);
+      console.log(products);
+    } catch (err: any) {
+
+        setError(err.message)
+    } finally {
+      setisLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getProducts();
+  }, [pageNo]);
+
+  return {
+    data,
+    isLoading,
+    error,
+  };
+};

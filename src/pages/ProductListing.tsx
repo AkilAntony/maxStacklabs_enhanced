@@ -1,0 +1,109 @@
+import { useProductCategories } from "../hooks/useProductCategories";
+import { useProductss } from "../hooks/useProducts";
+import LayoutWrapper from "../components/common/LayoutWrapper";
+import FallbackUI from "../components/common/FallbackUI";
+import ProductCard from "../components/ProductCard";
+import type { Product } from "../types/product";
+import { useMemo, useState } from "react";
+import { useDebounce } from "../hooks/useDebounce";
+import SearchBar from "../components/SearchBar";
+import Pagintion from "../components/common/Pagintion";
+
+const ProductListing = () => {
+  const [userInput, setUserInput] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const debouncedInput = useDebounce(userInput);
+  const { error, isLoading } = useProductCategories();
+
+  const {
+    data: productData,
+    error: productsError,
+    isLoading: isProductLoading,
+  } = useProductss({
+    searchInput: "",
+    pageNo: currentPage,
+  });
+
+  const totalPages = Math.ceil((productData?.total as number) / 10);
+
+  const filteredProducts = useMemo(() => {
+    return productData?.products.filter((product) => {
+      
+      // handle search in frontend
+      if (debouncedInput) {
+        const searchParam = debouncedInput.split(" ").join("").toLowerCase();
+        const title = product.title.split(" ").join("").toLowerCase();
+        if (!title.startsWith(searchParam)) return false;
+      }
+
+      return true;
+    });
+  }, [productData, debouncedInput]);
+
+ 
+
+  if (error || productsError) {
+    return (
+      <LayoutWrapper>
+        <div className="content-wrapper ">
+          <FallbackUI message="Failed to Fetch products" />
+        </div>
+      </LayoutWrapper>
+    );
+  }
+
+  if (isLoading || isProductLoading) {
+    return (
+      <LayoutWrapper>
+        <div>Loading..</div>
+      </LayoutWrapper>
+    );
+  }
+
+  return (
+    <LayoutWrapper contentStyles="justify-start items-start">
+      <div className="content-wrapper mx-auto w-full">
+        {/* search input */}
+        <SearchBar
+          setUserInput={setUserInput}
+          userInput={userInput}
+          placeholder="Search products"
+        />
+
+        {/* product Listing  */}
+        {filteredProducts && filteredProducts.length > 0 ? (
+          <div>
+            <div className="grid md:grid-cols-3 gap-3 py-10">
+              {filteredProducts?.map((product: Product) => (
+                <ProductCard
+                  imageUrl={product.images[0]}
+                  price={100}
+                  productName={product.title}
+                  key={product.id}
+                  rating={product.rating}
+                  category={product.category}
+                />
+              ))}
+            </div>
+
+            {/* pagination */}
+            <div className="flex justify-end">
+              <Pagintion
+                totalpages={totalPages}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+              />
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col mt-10 justify-center text-center">
+            No Products found
+          </div>
+        )}
+      </div>
+    </LayoutWrapper>
+  );
+};
+
+export default ProductListing;
